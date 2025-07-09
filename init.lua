@@ -1,3 +1,7 @@
+vim.keymap.set("i", "<CapsLock>", "<Esc>")
+vim.keymap.set("n", "<CapsLock>", "<Esc>")
+vim.keymap.set("v", "<CapsLock>", "<Esc>")
+
 vim.opt.shellcmdflag = "-c"
 vim.opt.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
 vim.opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
@@ -9,7 +13,7 @@ vim.opt.shellxquote = ""
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-vim.opt.colorcolumn = "80"-- Disable the start screen and intro message
+vim.opt.colorcolumn = "80" -- Disable the start screen and intro message
 vim.opt.shortmess:append("I") -- Disable the intro message
 vim.opt.shortmess:append("c") -- Don't show "Press ENTER or type command to continue"
 
@@ -18,14 +22,13 @@ vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = "a"
@@ -105,7 +108,7 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')init
 -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
@@ -159,6 +162,14 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	end
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
+
+vim.o.autoread = true
+
+-- Auto-read on focus gained or when a file is changed outside
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+	pattern = "*",
+	command = "checktime",
+})
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -206,7 +217,7 @@ require("lazy").setup({
 					file_browser = {
 						mappings = {
 							["n"] = {
-								["<M-r>"] = function(prompt_bufnr)
+								["<M-s>"] = function(prompt_bufnr)
 									local entry = action_state.get_selected_entry()
 									local path = entry.path or entry.filename
 									actions.close(prompt_bufnr)
@@ -216,7 +227,7 @@ require("lazy").setup({
 								end,
 							},
 							["i"] = {
-								["<M-r>"] = function(prompt_bufnr)
+								["<M-s>"] = function(prompt_bufnr)
 									local entry = action_state.get_selected_entry()
 									local path = entry.path or entry.filename
 									actions.close(prompt_bufnr)
@@ -766,6 +777,7 @@ require("lazy").setup({
 				-- clangd = {},
 				-- gopls = {},
 				-- pyright = {},
+				wgsl_analyzer = {},
 				rust_analyzer = {
 					settings = {
 						["rust-analyzer"] = {
@@ -781,10 +793,7 @@ require("lazy").setup({
 									},
 								},
 							},
-							checkOnSave = {
-								command = "clippy",
-								extraArgs = { "--no-deps" },
-							},
+							checkOnSave = true,
 						},
 					},
 				},
@@ -911,6 +920,7 @@ require("lazy").setup({
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
+				rust = { "rustfmt" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },
 				--
