@@ -215,6 +215,8 @@ require("lazy").setup({
 			require("telescope").setup({
 				extensions = {
 					file_browser = {
+						hidden = true,
+						no_ignore = true,
 						mappings = {
 							["n"] = {
 								["<M-s>"] = function(prompt_bufnr)
